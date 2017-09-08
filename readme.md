@@ -15,6 +15,10 @@ var currency3 = currency2 - 4.56;
 var currency4 = currency3 * 2;
 var currency5 = currency4 / 4;
 var currency6 = currency1 + currency2;
+
+if(currency1 < currency2) { ... }
+if(currency1 > currency2) { ... }
+if(currency1 === 1.23) { ... }
 ```
 
 **Out**
@@ -28,6 +32,10 @@ var currency3 = currency2.subtract(4.56);
 var currency4 = currency3.multiply(2);
 var currency5 = currency4.divide(4);
 var currency6 = currency1.add(currency2);
+
+if(currency1.value < currency2.value) { ... }
+if(currency1.value > currency2.value) { ... }
+if(currency1.value === 1.23) { ... }
 ```
 
 ## Installation
