@@ -14,6 +14,7 @@ var currency2 = currency1 + 4.56;
 var currency3 = currency2 - 4.56;
 var currency4 = currency3 * 2;
 var currency5 = currency4 / 4;
+var currency6 = currency1 + currency2;
 ```
 
 **Out**
@@ -26,6 +27,7 @@ var currency2 = currency1.add(4.56);
 var currency3 = currency2.subtract(4.56);
 var currency4 = currency3.multiply(2);
 var currency5 = currency4.divide(4);
+var currency6 = currency1.add(currency2);
 ```
 
 ## Installation
