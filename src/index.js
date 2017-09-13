@@ -47,41 +47,47 @@ export default function transformCurrencyOperators({ types: t }) {
       return expressionCallsCurrency(node.argument.callee, identifiers);
     }
 
-    return t.isIdentifier(node) && identifiers.includes(node.name);
+    return t.isIdentifier(node) && identifiers.has(node.name);
   }
 
-  function expressionContainsCurrency(path, methodName) {
-    let { node } = path
-      , currencyVariables = [methodName];
+  function pathContainsCurrency(refPath, methodName) {
+    let { node } = refPath
+      , currencyVariables = new Set([methodName]);
 
     const Visitors = {
       FunctionDeclaration({ node }) {
         if (
           expressionCallsCurrency(
             node.body.body.find(n => t.isReturnStatement(n)),
-            [methodName, ...currencyVariables]
+            currencyVariables
           )
         ) {
-          currencyVariables.push(node.id.name);
+          currencyVariables.add(node.id.name);
         }
       },
-      VariableDeclarator({ node }) {
+      VariableDeclarator({ scope, node }) {
         if (expressionCallsCurrency(node.init, currencyVariables)) {
-          currencyVariables.push(node.id.name);
+          let binding = scope.bindings[node.id.name] || {};
+          if (
+            binding.kind !== 'let' ||
+            (binding.kind === 'let' && binding.scope === refPath.scope)
+          ) {
+            currencyVariables.add(node.id.name);
+          }
         }
       },
       AssignmentExpression({ node }) {
         let { left, right } = node;
         if (!expressionCallsCurrency(right, currencyVariables)) {
-          currencyVariables = currencyVariables.filter(x => x !== left.name);
+          currencyVariables.delete(left.name);
         } else {
-          currencyVariables.push(left.name);
+          currencyVariables.add(left.name);
         }
       },
     };
 
     // Attempt to find any currency variables in scope
-    let currentPath = path.parentPath;
+    let currentPath = refPath.parentPath;
     while (currentPath) {
       currentPath.traverse(Visitors);
       currentPath = currentPath.parentPath;
@@ -115,7 +121,7 @@ export default function transformCurrencyOperators({ types: t }) {
       return t.binaryExpression(
         operator,
         t.memberExpression(left, t.identifier('value')),
-        expressionContainsCurrency(path.get('right'), methodName)
+        pathContainsCurrency(path.get('right'), methodName)
           ? t.memberExpression(right, t.identifier('value'))
           : right
       );
@@ -158,7 +164,7 @@ export default function transformCurrencyOperators({ types: t }) {
       BinaryExpression(path, { opts }) {
         if (
           opts.hasCurrency &&
-          expressionContainsCurrency(path.get('left'), opts.methodName)
+          pathContainsCurrency(path.get('left'), opts.methodName)
         ) {
           // Prevent replacement nodes from being visited multiple times
           path.stop();

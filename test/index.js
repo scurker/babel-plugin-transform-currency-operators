@@ -385,5 +385,22 @@ pluginTester({
         var b = a.add(4.56);
       `,
     },
+    {
+      title: 'ignores currencies out of scope',
+      code: `
+        import currency from 'currency.js';
+        if (true) { let a = currency(1.23); }
+        let a = 1;
+        var b = a + 2;
+      `,
+      output: `
+        import currency from 'currency.js';
+        if (true) {
+          let a = currency(1.23);
+        }
+        let a = 1;
+        var b = a + 2;
+      `,
+    },
   ],
 });
