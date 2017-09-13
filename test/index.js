@@ -14,7 +14,7 @@ pluginTester({
       output: `
         import any from 'currency.js';
         any(1.23).add(4.56);
-      `
+      `,
     },
     {
       title: 'require transform',
@@ -25,7 +25,7 @@ pluginTester({
       output: `
         var currency = require('currency.js');
         currency(1.23).add(4.56);
-      `
+      `,
     },
     {
       title: 'add transform',
@@ -36,7 +36,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         currency(1.23).add(4.56);
-      `
+      `,
     },
     {
       title: 'subtract transform',
@@ -47,7 +47,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         currency(1.23).subtract(4.56);
-      `
+      `,
     },
     {
       title: 'multiply transform',
@@ -58,7 +58,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         currency(1.23).multiply(4.56);
-      `
+      `,
     },
     {
       title: 'divide transform',
@@ -69,10 +69,9 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         currency(1.23).divide(4.56);
-      `
+      `,
     },
     {
-      skip: true,
       title: 'transforms multiple binary expressions',
       code: `
         import currency from 'currency.js';
@@ -85,7 +84,7 @@ pluginTester({
         var a = currency(1.23);
         var b = currency(4.56);
         var c = a.add(b).add(7.89);
-      `
+      `,
     },
     {
       title: 'compare currencies less than transform',
@@ -96,7 +95,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value < currency(4.56).value) {}
-      `
+      `,
     },
     {
       title: 'compare currencies greater than transform',
@@ -107,7 +106,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value > currency(4.56).value) {}
-      `
+      `,
     },
     {
       title: 'compare currencies less than or equal transform',
@@ -118,7 +117,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value <= currency(4.56).value) {}
-      `
+      `,
     },
     {
       title: 'compare currencies greater than or equal transform',
@@ -129,7 +128,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value >= currency(4.56).value) {}
-      `
+      `,
     },
     {
       title: 'compare currencies equals transform',
@@ -140,7 +139,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value == currency(4.56).value) {}
-      `
+      `,
     },
     {
       title: 'compare currencies strict equals transform',
@@ -151,7 +150,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value === currency(4.56).value) {}
-      `
+      `,
     },
     {
       title: 'compare mixed less than transform',
@@ -162,7 +161,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value < 4.56) {}
-      `
+      `,
     },
     {
       title: 'compare mixed greater than transform',
@@ -173,7 +172,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value > 4.56) {}
-      `
+      `,
     },
     {
       title: 'compare mixed less than or equal transform',
@@ -184,7 +183,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value <= 4.56) {}
-      `
+      `,
     },
     {
       title: 'compare mixed greater than or equal transform',
@@ -195,7 +194,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value >= 4.56) {}
-      `
+      `,
     },
     {
       title: 'compare mixed equals transform',
@@ -206,7 +205,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value == 4.56) {}
-      `
+      `,
     },
     {
       title: 'compare mixed strict equals transform',
@@ -217,7 +216,7 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value === 4.56) {}
-      `
+      `,
     },
     {
       title: 'recognizes currency variables in arithmetic',
@@ -232,10 +231,9 @@ pluginTester({
         var a = currency(1.23);
         var b = currency(4.56);
         var c = a.add(b);
-      `
+      `,
     },
     {
-      skip: true,
       title: 'recognizes currency variable assignment',
       code: `
         import currency from 'currency.js';
@@ -248,10 +246,9 @@ pluginTester({
         var a = 1;
         a = currency(1.23);
         var b = a.add(1);
-      `
+      `,
     },
     {
-      skip: true,
       title: 'ignores currency variable reassignment',
       code: `
         import currency from 'currency.js';
@@ -264,10 +261,9 @@ pluginTester({
         var a = currency(1.23);
         a = 1;
         var b = a + 1;
-      `
+      `,
     },
     {
-      skip: true,
       title: 'recognizes currency variables in comparison',
       code: `
         import currency from 'currency.js';
@@ -280,7 +276,7 @@ pluginTester({
         var a = currency(1.23);
         var b = currency(4.56);
         if (a.value < b.value) {};
-      `
+      `,
     },
     {
       title: 'ignores unknown identifiers for arithmetic operators',
@@ -295,7 +291,7 @@ pluginTester({
         var a = 1;
         var b = currency(4.56);
         var c = a + b;
-      `
+      `,
     },
     {
       title: 'ignores unknown identifiers for compare operators',
@@ -310,7 +306,7 @@ pluginTester({
         var a = 1;
         var b = currency(4.56);
         if (a < b) {}
-      `
+      `,
     },
     {
       title: 'transforms variables in nested scopes',
@@ -329,7 +325,65 @@ pluginTester({
         if (true) {
           var c = a.add(b);
         }
-      `
-    }
-  ]
+      `,
+    },
+    {
+      title: 'transforms currency arrow function factories',
+      code: `
+        import currency from 'currency.js';
+        var a = value => currency(value, {});
+        var b = a(1.23) + 4.56;
+      `,
+      output: `
+        import currency from 'currency.js';
+        var a = value => currency(value, {});
+        var b = a(1.23).add(4.56);
+      `,
+    },
+    {
+      title: 'transforms currency arrow block function factories',
+      code: `
+        import currency from 'currency.js';
+        var a = value => { return currency(value, {}); };
+        var b = a(1.23) + 4.56;
+      `,
+      output: `
+        import currency from 'currency.js';
+        var a = value => {
+          return currency(value, {});
+        };
+        var b = a(1.23).add(4.56);
+      `,
+    },
+    {
+      title: 'transforms currency function factories',
+      code: `
+        import currency from 'currency.js';
+        function foo(value) { return currency(1.23, {}); }
+        var a = foo + 4.56;
+      `,
+      output: `
+        import currency from 'currency.js';
+        function foo(value) {
+          return currency(1.23, {});
+        }
+        var a = foo.add(4.56);
+      `,
+    },
+    {
+      title: 'transforms currency function variable factories',
+      code: `
+        import currency from 'currency.js';
+        var a = function (value) { return currency(1.23, {}); }
+        var b = a + 4.56;
+      `,
+      output: `
+        import currency from 'currency.js';
+        var a = function (value) {
+          return currency(1.23, {});
+        };
+        var b = a.add(4.56);
+      `,
+    },
+  ],
 });

@@ -2,23 +2,19 @@ const arithmeticOperators = {
   '+': 'add',
   '-': 'subtract',
   '/': 'divide',
-  '*': 'multiply'
+  '*': 'multiply',
 };
 
-const compareOperators = [
-  '===',
-  '==',
-  '>',
-  '<',
-  '>=',
-  '<='
-];
+const compareOperators = ['===', '==', '>', '<', '>=', '<='];
 
 export default function transformCurrencyOperators({ types: t }) {
-
   function expressionCallsCurrency(node, identifiers) {
     if (!node) {
       return false;
+    }
+
+    if (t.isBinaryExpression(node)) {
+      return expressionCallsCurrency(node.left, identifiers);
     }
 
     if (t.isCallExpression(node)) {
@@ -29,8 +25,26 @@ export default function transformCurrencyOperators({ types: t }) {
       return expressionCallsCurrency(node.object, identifiers);
     }
 
-    if (t.isBinaryExpression(node)) {
-      return expressionCallsCurrency(node.left, identifiers);
+    if (t.isFunctionExpression(node)) {
+      return expressionCallsCurrency(
+        node.body.body.find(n => t.isReturnStatement(n)),
+        identifiers
+      );
+    }
+
+    if (t.isArrowFunctionExpression(node)) {
+      if (t.isCallExpression(node.body)) {
+        return expressionCallsCurrency(node.body, identifiers);
+      } else if (t.isBlockStatement(node.body)) {
+        return expressionCallsCurrency(
+          node.body.body.find(n => t.isReturnStatement(n)),
+          identifiers
+        );
+      }
+    }
+
+    if (t.isReturnStatement(node)) {
+      return expressionCallsCurrency(node.argument.callee, identifiers);
     }
 
     return t.isIdentifier(node) && identifiers.includes(node.name);
@@ -38,33 +52,50 @@ export default function transformCurrencyOperators({ types: t }) {
 
   function expressionContainsCurrency(path, methodName) {
     let { node } = path
-      , currencyVariables = [];
+      , currencyVariables = [methodName];
 
-    const VariableVisitor = {
-      VariableDeclarator({ node }) {
-        if (expressionCallsCurrency(node.init, [methodName, ...currencyVariables])) {
+    const Visitors = {
+      FunctionDeclaration({ node }) {
+        if (
+          expressionCallsCurrency(
+            node.body.body.find(n => t.isReturnStatement(n)),
+            [methodName, ...currencyVariables]
+          )
+        ) {
           currencyVariables.push(node.id.name);
         }
-      }
+      },
+      VariableDeclarator({ node }) {
+        if (expressionCallsCurrency(node.init, currencyVariables)) {
+          currencyVariables.push(node.id.name);
+        }
+      },
+      AssignmentExpression({ node }) {
+        let { left, right } = node;
+        if (!expressionCallsCurrency(right, currencyVariables)) {
+          currencyVariables = currencyVariables.filter(x => x !== left.name);
+        } else {
+          currencyVariables.push(left.name);
+        }
+      },
     };
 
-    if(t.isIdentifier(node)) {
-      // Attempt to find any currency variables in scope
-      let currentPath = path.parentPath;
-      while(currentPath) {
-        currentPath.traverse(VariableVisitor);
-        currentPath = currentPath.parentPath;
-      }
+    // Attempt to find any currency variables in scope
+    let currentPath = path.parentPath;
+    while (currentPath) {
+      currentPath.traverse(Visitors);
+      currentPath = currentPath.parentPath;
     }
 
-    return node && expressionCallsCurrency(node, [methodName]) || (t.isIdentifier(node) && currencyVariables.includes(node.name));
+    return node && expressionCallsCurrency(node, currencyVariables);
   }
 
-  function buildExpression(node, methodName) {
-    let { operator, left, right } = node;
+  function buildExpression(path, methodName) {
+    let { node } = path
+      , { operator, left, right } = node;
 
     if (t.isBinaryExpression(left)) {
-      left = buildExpression(left);
+      left = buildExpression(path.get('left'));
     }
 
     let currencyMethod = arithmeticOperators[operator];
@@ -77,14 +108,16 @@ export default function transformCurrencyOperators({ types: t }) {
         ),
         [right]
       );
-    } else if(compareOperators.includes(operator)) {
+    } else if (
+      compareOperators.includes(operator) &&
+      !t.isMemberExpression(node.left)
+    ) {
       return t.binaryExpression(
         operator,
-        t.memberExpression(
-          left,
-          t.identifier('value')
-        ),
-        expressionContainsCurrency({ node: right }, methodName) ? t.memberExpression(right, t.identifier('value')) : right
+        t.memberExpression(left, t.identifier('value')),
+        expressionContainsCurrency(path.get('right'), methodName)
+          ? t.memberExpression(right, t.identifier('value'))
+          : right
       );
     } else {
       return node;
@@ -92,13 +125,15 @@ export default function transformCurrencyOperators({ types: t }) {
   }
 
   return {
-
     visitor: {
-
       VariableDeclarator({ node }, { opts }) {
         let { init } = node;
 
-        if(t.isCallExpression(init) && init.callee.name === 'require' && init.arguments[0].value === 'currency.js') {
+        if (
+          t.isCallExpression(init) &&
+          init.callee.name === 'require' &&
+          init.arguments[0].value === 'currency.js'
+        ) {
           opts.hasCurrency = true;
           opts.methodName = node.id.name;
         }
@@ -109,8 +144,10 @@ export default function transformCurrencyOperators({ types: t }) {
       ImportDeclaration({ node }, { opts }) {
         let { source, specifiers } = node;
 
-        if(source.value === 'currency.js') {
-          let defaultImport = specifiers.find(specifier => t.isImportDefaultSpecifier(specifier));
+        if (source.value === 'currency.js') {
+          let defaultImport = specifiers.find(specifier =>
+            t.isImportDefaultSpecifier(specifier)
+          );
           opts.hasCurrency = true;
           opts.methodName = defaultImport.local.name;
         }
@@ -119,18 +156,18 @@ export default function transformCurrencyOperators({ types: t }) {
       },
 
       BinaryExpression(path, { opts }) {
-        if(opts.hasCurrency && expressionContainsCurrency(path.get('left'), opts.methodName)) {
+        if (
+          opts.hasCurrency &&
+          expressionContainsCurrency(path.get('left'), opts.methodName)
+        ) {
           // Prevent replacement nodes from being visited multiple times
           path.stop();
 
-          return path.replaceWith(buildExpression(path.node, opts.methodName));
+          return path.replaceWith(buildExpression(path, opts.methodName));
         }
 
         return;
-      }
-
-    }
-
-  }
-
+      },
+    },
+  };
 }

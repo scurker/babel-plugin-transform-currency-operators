@@ -16,6 +16,9 @@ var currency4 = currency3 * 2;
 var currency5 = currency4 / 4;
 var currency6 = currency1 + currency2;
 
+var MultiDecimal = value => currency(value, { decimals: 3 });
+var currency7 = MultiDecimal(1.234) + 5.678;
+
 if(currency1 < currency2) { ... }
 if(currency1 > currency2) { ... }
 if(currency1 === 1.23) { ... }
@@ -32,6 +35,9 @@ var currency3 = currency2.subtract(4.56);
 var currency4 = currency3.multiply(2);
 var currency5 = currency4.divide(4);
 var currency6 = currency1.add(currency2);
+
+var MultiDecimal = value => currency(value, { decimals: 3 });
+var currency7 = MultiDecimal(1.234).add(5.678);
 
 if(currency1.value < currency2.value) { ... }
 if(currency1.value > currency2.value) { ... }

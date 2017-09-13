@@ -1,12 +1,15 @@
 {
   "name": "babel-plugin-transform-currency-operators",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-beta.1",
   "homepage": "An experimental babel plugin for transforming currency.js operators",
   "description": "https://github.com/scurker/babel-plugin-transform-currency-operators",
   "main": "src/index.js",
   "scripts": {
     "coverage": "nyc mocha --compilers js:babel-core/register ./test/index.js",
+    "report:html": "nyc report --reporter=html",
+    "report:text-lcov": "nyc report --reporter=text-lcov",
     "lint": "eslint .",
+    "prettier": "prettier --single-quote --trailing-comma es5 --write '{src/**/*.js,test/**/*.js}'",
     "test": "mocha --compilers js:babel-core/register"
   },
   "repository": {
@@ -34,6 +37,7 @@
     "babel-preset-es2015": "^6.24.1",
     "eslint": "^4.6.1",
     "mocha": "^3.5.0",
-    "nyc": "^11.2.1"
+    "nyc": "^11.2.1",
+    "prettier": "^1.6.1"
   }
 }
