@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-currency-operators",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "homepage": "An experimental babel plugin for transforming currency.js operators",
   "description": "https://github.com/scurker/babel-plugin-transform-currency-operators",
   "main": "src/index.js",

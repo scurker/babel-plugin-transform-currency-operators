@@ -1,5 +1,6 @@
 import transformCurrencyOperators from '../src';
 import pluginTester from 'babel-plugin-tester';
+import path from 'path';
 
 pluginTester({
   plugin: transformCurrencyOperators,
@@ -400,6 +401,35 @@ pluginTester({
         }
         let a = 1;
         var b = a + 2;
+      `,
+    },
+    {
+      title: 'allows methods to be called with wrapped currencies',
+      code: `
+        import currency from 'currency.js';
+        let a = (currency(1.23) + 4.56).format();
+      `,
+      output: `
+        import currency from 'currency.js';
+        let a = currency(1.23).add(4.56).format();
+      `,
+    },
+    {
+      title: 'transform allows custom import currencies',
+      pluginOptions: ['./test/fixtures/currencies/currencyWithDefaults'],
+      fixture: path.join(__dirname, 'fixtures/testImportCurrency.js'),
+      output: `
+        import exportedCurrency from './currencies/currencyWithDefaults';
+        let a = exportedCurrency(1.23).add(4.56);
+      `,
+    },
+    {
+      title: 'transform allows custom require currencies',
+      pluginOptions: ['./test/fixtures/currencies/currencyWithDefaults'],
+      fixture: path.join(__dirname, 'fixtures/testRequireCurrency.js'),
+      output: `
+        var exportedCurrency = require('./currencies/currencyWithDefaults');
+        let a = exportedCurrency(1.23).add(4.56);
       `,
     },
   ],

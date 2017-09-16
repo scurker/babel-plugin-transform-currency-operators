@@ -84,6 +84,28 @@ require("babel-core").transform("code", {
 });
 ```
 
+## Advanced Usage
+
+If you have a need to customize and export currency settings as a module, you can include the path to your currency (relative from the root of your project) in your `.babelrc` plugin configuration to transform those imported module's operator along with any `currency.js` imports:
+
+> File in your project: `path/to/custom/currency.js`
+
+```javascript
+import currency from 'currency.js';
+
+export default function myCustomCurrencyDefaults(value) {
+  return currency(value, { symbol: '€', ...otherOptions });
+}
+```
+
+### `.babelrc`
+
+```javascript
+{
+  "plugins": ["transform-currency-operators", ['./path/to/custom/currency']]
+}
+```
+
 ## License
 
 [MIT](/license)

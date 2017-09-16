@@ -1,3 +1,5 @@
+import resolveRelativePath from './resolveRelativePath';
+
 const arithmeticOperators = {
   '+': 'add',
   '-': 'subtract',
@@ -131,14 +133,22 @@ export default function transformCurrencyOperators({ types: t }) {
   }
 
   return {
+    pre({ opts }) {
+      let { filename } = opts
+        , paths = Array.isArray(this.opts)
+            ? this.opts.map(path => resolveRelativePath(filename, path))
+            : [];
+      this.currencyResolution = new Set(['currency.js', ...paths]);
+    },
+
     visitor: {
-      VariableDeclarator({ node }, { opts }) {
+      VariableDeclarator({ node }, { opts, currencyResolution }) {
         let { init } = node;
 
         if (
           t.isCallExpression(init) &&
           init.callee.name === 'require' &&
-          init.arguments[0].value === 'currency.js'
+          currencyResolution.has(init.arguments[0].value)
         ) {
           opts.hasCurrency = true;
           opts.methodName = node.id.name;
@@ -147,10 +157,10 @@ export default function transformCurrencyOperators({ types: t }) {
         return;
       },
 
-      ImportDeclaration({ node }, { opts }) {
+      ImportDeclaration({ node }, { opts, currencyResolution }) {
         let { source, specifiers } = node;
 
-        if (source.value === 'currency.js') {
+        if (currencyResolution.has(source.value)) {
           let defaultImport = specifiers.find(specifier =>
             t.isImportDefaultSpecifier(specifier)
           );
