@@ -13,5 +13,6 @@ export default {
   output: {
     format: 'cjs',
     file: pkg.main
-  }
+  },
+  external: ['path']
 };

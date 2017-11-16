@@ -6,13 +6,13 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rollup -c",
-    "coverage": "BABEL_ENV=test nyc mocha --compilers js:babel-core/register ./test/index.js",
+    "coverage": "BABEL_ENV=test nyc mocha --require babel-core/register ./test/index.js",
     "report:html": "nyc report --reporter=html",
     "report:text-lcov": "nyc report --reporter=text-lcov",
     "lint": "eslint .",
     "prettier": "prettier --single-quote --trailing-comma es5 --write '{src/**/*.js,test/**/*.js}'",
     "prepublish": "npm run build",
-    "test": "BABEL_ENV=test mocha --compilers js:babel-core/register"
+    "test": "BABEL_ENV=test mocha --require babel-core/register"
   },
   "repository": {
     "type": "git",
