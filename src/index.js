@@ -179,7 +179,8 @@ export default function transformCurrencyOperators({ types: t }) {
           // Prevent replacement nodes from being visited multiple times
           path.stop();
 
-          return path.replaceWith(buildExpression(path, opts.methodName));
+          path.replaceWith(buildExpression(path, opts.methodName));
+          return;
         }
 
         return;
