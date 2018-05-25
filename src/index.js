@@ -7,7 +7,7 @@ const arithmeticOperators = {
   '*': 'multiply',
 };
 
-const compareOperators = ['===', '==', '>', '<', '>=', '<='];
+const compareOperators = ['===', '==', '>', '<', '>=', '<=', '!=', '!=='];
 
 export default function transformCurrencyOperators({ types: t }) {
   function expressionCallsCurrency(node, identifiers) {
