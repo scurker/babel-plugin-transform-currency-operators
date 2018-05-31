@@ -88,17 +88,6 @@ pluginTester({
       `,
     },
     {
-      title: 'compare currencies different from transform',
-      code: `
-        import currency from 'currency.js';
-        if (currency(1.23) != currency(4.56)) {}
-      `,
-      output: `
-        import currency from 'currency.js';
-        if (currency(1.23).value != currency(4.56).value) {}
-      `,
-    },
-    {
       title: 'compare currencies less than transform',
       code: `
         import currency from 'currency.js';
@@ -162,6 +151,28 @@ pluginTester({
       output: `
         import currency from 'currency.js';
         if (currency(1.23).value === currency(4.56).value) {}
+      `,
+    },
+    {
+      title: 'compare currencies not equal from transform',
+      code: `
+        import currency from 'currency.js';
+        if (currency(1.23) != currency(4.56)) {}
+      `,
+      output: `
+        import currency from 'currency.js';
+        if (currency(1.23).value != currency(4.56).value) {}
+      `,
+    },
+    {
+      title: 'compare currencies strict not equal from transform',
+      code: `
+        import currency from 'currency.js';
+        if (currency(1.23) !== currency(4.56)) {}
+      `,
+      output: `
+        import currency from 'currency.js';
+        if (currency(1.23).value !== currency(4.56).value) {}
       `,
     },
     {
