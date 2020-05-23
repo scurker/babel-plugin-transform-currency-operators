@@ -1,10 +1,12 @@
 import transformCurrencyOperators from '../src';
 import pluginTester from 'babel-plugin-tester';
+import { format } from 'prettier'
 import path from 'path';
 
 pluginTester({
   plugin: transformCurrencyOperators,
   pluginName: 'transform-currency-operators',
+  formatResult: source => format(source, { parser: 'babel', singleQuote: true }),
   tests: [
     {
       title: 'dynamically named import transform',
@@ -25,6 +27,7 @@ pluginTester({
       `,
       output: `
         var currency = require('currency.js');
+
         currency(1.23).add(4.56);
       `,
     },
@@ -95,7 +98,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value < currency(4.56).value) {}
+
+        if (currency(1.23).value < currency(4.56).value) {
+        }
       `,
     },
     {
@@ -106,7 +111,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value > currency(4.56).value) {}
+
+        if (currency(1.23).value > currency(4.56).value) {
+        }
       `,
     },
     {
@@ -117,7 +124,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value <= currency(4.56).value) {}
+
+        if (currency(1.23).value <= currency(4.56).value) {
+        }
       `,
     },
     {
@@ -128,7 +137,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value >= currency(4.56).value) {}
+
+        if (currency(1.23).value >= currency(4.56).value) {
+        }
       `,
     },
     {
@@ -139,7 +150,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value == currency(4.56).value) {}
+
+        if (currency(1.23).value == currency(4.56).value) {
+        }
       `,
     },
     {
@@ -150,7 +163,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value === currency(4.56).value) {}
+
+        if (currency(1.23).value === currency(4.56).value) {
+        }
       `,
     },
     {
@@ -161,7 +176,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value != currency(4.56).value) {}
+
+        if (currency(1.23).value != currency(4.56).value) {
+        }
       `,
     },
     {
@@ -172,7 +189,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value !== currency(4.56).value) {}
+
+        if (currency(1.23).value !== currency(4.56).value) {
+        }
       `,
     },
     {
@@ -183,7 +202,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value < 4.56) {}
+
+        if (currency(1.23).value < 4.56) {
+        }
       `,
     },
     {
@@ -194,7 +215,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value > 4.56) {}
+
+        if (currency(1.23).value > 4.56) {
+        }
       `,
     },
     {
@@ -205,7 +228,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value <= 4.56) {}
+
+        if (currency(1.23).value <= 4.56) {
+        }
       `,
     },
     {
@@ -216,7 +241,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value >= 4.56) {}
+
+        if (currency(1.23).value >= 4.56) {
+        }
       `,
     },
     {
@@ -227,7 +254,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value == 4.56) {}
+
+        if (currency(1.23).value == 4.56) {
+        }
       `,
     },
     {
@@ -238,7 +267,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        if (currency(1.23).value === 4.56) {}
+
+        if (currency(1.23).value === 4.56) {
+        }
       `,
     },
     {
@@ -292,13 +323,15 @@ pluginTester({
         import currency from 'currency.js';
         var a = currency(1.23);
         var b = currency(4.56);
-        if (a < b) {};
+        if (a < b) {}
       `,
       output: `
         import currency from 'currency.js';
         var a = currency(1.23);
         var b = currency(4.56);
-        if (a.value < b.value) {};
+
+        if (a.value < b.value) {
+        }
       `,
     },
     {
@@ -328,7 +361,9 @@ pluginTester({
         import currency from 'currency.js';
         var a = 1;
         var b = currency(4.56);
-        if (a < b) {}
+
+        if (a < b) {
+        }
       `,
     },
     {
@@ -345,6 +380,7 @@ pluginTester({
         import currency from 'currency.js';
         var a = currency(1.23);
         var b = currency(4.56);
+
         if (true) {
           var c = a.add(b);
         }
@@ -359,7 +395,9 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        var a = value => currency(value, {});
+
+        var a = (value) => currency(value, {});
+
         var b = a(1.23).add(4.56);
       `,
     },
@@ -372,9 +410,11 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
-        var a = value => {
+
+        var a = (value) => {
           return currency(value, {});
         };
+
         var b = a(1.23).add(4.56);
       `,
     },
@@ -387,9 +427,11 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
+
         function foo(value) {
           return currency(1.23, {});
         }
+
         var a = foo.add(4.56);
       `,
     },
@@ -402,9 +444,11 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
+
         var a = function (value) {
           return currency(1.23, {});
         };
+
         var b = a.add(4.56);
       `,
     },
@@ -418,9 +462,11 @@ pluginTester({
       `,
       output: `
         import currency from 'currency.js';
+
         if (true) {
           let a = currency(1.23);
         }
+
         let a = 1;
         var b = a + 2;
       `,
@@ -438,7 +484,7 @@ pluginTester({
     },
     {
       title: 'transform allows custom import currencies',
-      pluginOptions: ['./test/fixtures/currencies/currencyWithDefaults'],
+      pluginOptions: { customCurrency: './test/fixtures/currencies/currencyWithDefaults' },
       fixture: path.join(__dirname, 'fixtures/testImportCurrency.js'),
       output: `
         import exportedCurrency from './currencies/currencyWithDefaults';
@@ -447,10 +493,11 @@ pluginTester({
     },
     {
       title: 'transform allows custom require currencies',
-      pluginOptions: ['./test/fixtures/currencies/currencyWithDefaults'],
+      pluginOptions: { customCurrency: ['./test/fixtures/currencies/currencyWithDefaults'] },
       fixture: path.join(__dirname, 'fixtures/testRequireCurrency.js'),
       output: `
         var exportedCurrency = require('./currencies/currencyWithDefaults');
+
         let a = exportedCurrency(1.23).add(4.56);
       `,
     },

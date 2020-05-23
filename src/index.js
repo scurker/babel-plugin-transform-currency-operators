@@ -135,10 +135,11 @@ export default function transformCurrencyOperators({ types: t }) {
   return {
     pre({ opts }) {
       let { filename } = opts
-        , paths = Array.isArray(this.opts)
-            ? this.opts.map(path => resolveRelativePath(filename, path))
-            : [];
-      this.currencyResolution = new Set(['currency.js', ...paths]);
+        , pluginOptions = this.opts
+        , paths = Array.isArray(pluginOptions.customCurrency)
+            ? pluginOptions.customCurrency.filter(path => typeof path === 'string')
+            : typeof pluginOptions.customCurrency === 'string' ? [pluginOptions.customCurrency] : []
+      this.currencyResolution = new Set(['currency.js', ...paths.map(path => resolveRelativePath(filename, path))]);
     },
 
     visitor: {
