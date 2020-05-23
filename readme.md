@@ -102,7 +102,7 @@ export default function myCustomCurrencyDefaults(value) {
 
 ```javascript
 {
-  "plugins": ["transform-currency-operators", ['./path/to/custom/currency']]
+  "plugins": ["transform-currency-operators", { customCurrency: './path/to/custom/currency' }]
 }
 ```
 
