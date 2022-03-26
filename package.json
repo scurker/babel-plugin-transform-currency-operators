@@ -42,7 +42,7 @@
     "@babel/register": "7.13.16",
     "babel-plugin-tester": "^9.1.0",
     "eslint": "^7.0.0",
-    "mocha": "^7.1.2",
+    "mocha": "9.2.2",
     "nyc": "^15.0.1",
     "prettier": "^2.0.5",
     "rollup": "^2.10.7",
