@@ -40,12 +40,12 @@
     "@babel/core": "7.13.16",
     "@babel/preset-env": "7.13.15",
     "@babel/register": "7.13.16",
-    "babel-plugin-tester": "^9.1.0",
-    "eslint": "^7.0.0",
+    "babel-plugin-tester": "9.1.0",
+    "eslint": "7.0.0",
     "mocha": "9.2.2",
-    "nyc": "^15.0.1",
-    "prettier": "^2.0.5",
-    "rollup": "^2.10.7",
-    "rollup-plugin-babel": "^4.4.0"
+    "nyc": "15.0.1",
+    "prettier": "2.0.5",
+    "rollup": "2.10.7",
+    "rollup-plugin-babel": "4.4.0"
   }
 }
